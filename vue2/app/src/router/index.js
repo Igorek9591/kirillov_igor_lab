@@ -95,6 +95,11 @@ const routes = [
     name: 'accordionStaysPage',
     component: () => import(/* webpackChunkName: "modal2" */ '../views/AccordionStaysPage.vue')
   },
+ {
+    path: '/Calendar',
+    name: 'Calendar',
+    component: () => import(/* webpackChunkName: "mainInput" */ '../views/CalendarPage.vue')
+ },
 ]
 
 const router = new VueRouter({
