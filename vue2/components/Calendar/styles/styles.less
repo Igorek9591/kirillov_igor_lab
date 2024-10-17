@@ -1,15 +1,31 @@
 @import "./../../../../_constants/less/vars.less";
 
 .calendar {
-    position: absolute;
+    position: relative;
     background-color: aliceblue;
-}
-.week {
-    display: flex;
-    justify-content: center;
-}
-.day{
-    width: 30px;
-    height: 30px;
-    text-align: center;
+    width: 210px;
+
+    &__input {
+        width: 100%;
+    }
+
+    &__button {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        &--disabled {
+          pointer-events: none;
+          filter: brightness(0.7);
+        }
+    }
+
+    &__line {
+        display: flex;
+        justify-content: center;
+    }
+
+    &__mount-title {
+        width: 80px;
+        text-align: center;
+    }
 }

@@ -1,26 +1,29 @@
 <template>
-    <div
-        :tabindex="0"
-        @focus="openCalendar"
-        @blur="closeCalendar"
-    >
-        <input :value="selectedDate.toISOString().slice(0, 10)"/>
+    <div class="calendar">
+        <input
+            :value="dateString"
+            readonly
+            @click="toggleCalendar"
+            class="calendar__input"
+        />
 
-        <div  aria-modal="true" class="calendar" v-show="showCalendar">
-            <div class="week">
-                <button class="day" v-on:click="decrementYear()"><<</button>
-                <button class="day" v-on:click="decrementMonth()"><</button>
-                <div style="width: 90px; text-align: center">{{monthNames[bufferDate.getMonth()] + bufferDate.getFullYear()}}</div>
-                <button class="day" v-on:click="incrementMonth()">></button>
-                <button class="day" v-on:click="incrementYear()">>></button>
+        <div  aria-modal="true" v-show="showCalendar">
+            <div class="calendar__line">
+                <button class="calendar__button" @click="decrementYear()"><<</button>
+                <button class="calendar__button" @click="decrementMonth()"><</button>
+                <div class="calendar__mount-title">{{monthNames[bufferDate.getMonth()] + bufferDate.getFullYear()}}</div>
+                <button class="calendar__button" @click="incrementMonth()">></button>
+                <button class="calendar__button" @click="incrementYear()">>></button>
             </div>
-            <div class="week">
-                <div class="day" v-for="day in dayNames">{{day}}</div>
+            <div class="calendar__line">
+                <div class="calendar__button" v-for="day in dayNames">{{day}}</div>
             </div>
             <div v-for="week in datesMatrix" class="week">
                 <button v-for="date in week"
-                        v-on:click="clickDate(date.date, date.enabled)"
-                        class="day">
+                        @click="pickDate(date.date)"
+                        class="calendar__button"
+                        :class="{'calendar__button--disabled': ! date.enabled}"
+                >
                     {{date.date}}
                 </button>
             </div>
@@ -69,6 +72,9 @@ export default {
             }
             return matrix
         },
+        dateString() {
+            return `${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth() + 1}-${this.selectedDate.getDate()}`
+        }
     },
 
     methods: {
@@ -79,12 +85,16 @@ export default {
         closeCalendar() {
             this.showCalendar = false
         },
-        clickDate(date, enabled) {
-            if (enabled){
-                this.selectedDate = new Date(this.bufferDate)
-                this.selectedDate.setDate(date)
+        toggleCalendar()  {
+            if(this.showCalendar)
                 this.closeCalendar()
-            }
+            else
+                this.openCalendar()
+        },
+        pickDate(date) {
+            this.selectedDate = new Date(this.bufferDate)
+            this.selectedDate.setDate(date)
+            this.closeCalendar()
         },
         incrementMonth(){
             this.bufferDate.setMonth(this.bufferDate.getMonth() + 1)
