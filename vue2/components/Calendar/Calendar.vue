@@ -4,28 +4,30 @@
             :value="dateString"
             readonly
             @click="toggleCalendar"
-            class="calendar__input"
         />
 
-        <div  aria-modal="true" v-show="showCalendar">
+        <div  aria-modal="true" v-show="showCalendar" class="calendar__selector">
             <div class="calendar__line">
-                <button class="calendar__button" @click="decrementYear()"><<</button>
-                <button class="calendar__button" @click="decrementMonth()"><</button>
-                <div class="calendar__mount-title">{{monthNames[bufferDate.getMonth()] + bufferDate.getFullYear()}}</div>
-                <button class="calendar__button" @click="incrementMonth()">></button>
-                <button class="calendar__button" @click="incrementYear()">>></button>
+                <div class="calendar__button" @click="changeBufferedDate(-1)">«</div>
+                <div class="calendar__button" @click="changeBufferedDate(0,-1)">‹</div>
+                <div class="calendar__mount-title">
+                    {{monthNames[bufferDate.getMonth()] + bufferDate.getFullYear()}}
+                </div>
+                <div class="calendar__button" @click="changeBufferedDate(0, 1)">›</div>
+                <div class="calendar__button" @click="changeBufferedDate(1)">»</div>
             </div>
             <div class="calendar__line">
-                <div class="calendar__button" v-for="day in dayNames">{{day}}</div>
+                <div v-for="day in dayNames" class="calendar__button">{{day}}</div>
             </div>
-            <div v-for="week in datesMatrix" class="week">
-                <button v-for="date in week"
-                        @click="pickDate(date.date)"
-                        class="calendar__button"
-                        :class="{'calendar__button--disabled': ! date.enabled}"
+            <div v-for="week in datesMatrix" class="calendar__line">
+                <div
+                    v-for="date in week"
+                    @click="pickDate(date.date)"
+                    class="calendar__button"
+                    :class="{'calendar__button--disabled': ! date.enabled}"
                 >
                     {{date.date}}
-                </button>
+                </div>
             </div>
         </div>
     </div>
@@ -39,20 +41,18 @@ export default {
         return {
             selectedDate: new Date(),
             bufferDate: new Date(),
-            matrixTrigger: false,
             showCalendar: false,
         }
     },
     computed: {
         monthNames() {
             return [
-                "Янв ", "Фев ", "Апр ", "Мар ", "Май ", "Июн ", "Июл ", "Авг ", "Сен ", "Окт ", "Ноя ", "Дек ",]
+                "янв ", "фев ", "апр ", "мар ", "май ", "июн ", "июл ", "авг ", "сен ", "окт ", "ноя ", "дек ",]
         },
         dayNames(){
-            return ['Пн', 'Вт','Ср','Чт','Пт','Сб','Вс',]
+            return ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс',]
         },
         datesMatrix() {
-            this.matrixTrigger
             let date = new Date(this.bufferDate)
             let next_month = (date.getMonth() + 1) % 12
             date.setDate(1)
@@ -96,21 +96,11 @@ export default {
             this.selectedDate.setDate(date)
             this.closeCalendar()
         },
-        incrementMonth(){
-            this.bufferDate.setMonth(this.bufferDate.getMonth() + 1)
-            this.matrixTrigger = !this.matrixTrigger
-        },
-        decrementMonth(){
-            this.bufferDate.setMonth(this.bufferDate.getMonth() - 1)
-            this.matrixTrigger = !this.matrixTrigger
-        },
-        incrementYear(){
-            this.bufferDate.setFullYear(this.bufferDate.getFullYear() + 1)
-            this.matrixTrigger = !this.matrixTrigger
-        },
-        decrementYear(){
-            this.bufferDate.setFullYear(this.bufferDate.getFullYear() - 1)
-            this.matrixTrigger = !this.matrixTrigger
+        changeBufferedDate(year=0, month=0){
+            let newDate = new Date(this.bufferDate)
+            newDate.setFullYear(newDate.getFullYear() + year)
+            newDate.setMonth(newDate.getMonth() + month)
+            this.bufferDate = newDate
         },
     }
 }

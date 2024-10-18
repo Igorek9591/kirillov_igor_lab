@@ -2,20 +2,24 @@
 
 .calendar {
     position: relative;
-    background-color: aliceblue;
-    width: 210px;
+    max-width: 250px;
+    color: #6b86ff;
+    font-family: "Arial", sans-serif;
+    font-weight: bolder;
 
-    &__input {
-        width: 100%;
+    &__selector{
+        padding: 3%;
+        aspect-ratio: 1/1;
+        box-shadow: 5px 5px 20px gray ;
     }
 
     &__button {
-        width: 30px;
-        height: 30px;
+        width: 14%;
+        aspect-ratio: 1/1;
         text-align: center;
         &--disabled {
           pointer-events: none;
-          filter: brightness(0.7);
+            color: #aaaaaa;
         }
     }
 
@@ -25,7 +29,7 @@
     }
 
     &__mount-title {
-        width: 80px;
+        width: 40%;
         text-align: center;
     }
 }
