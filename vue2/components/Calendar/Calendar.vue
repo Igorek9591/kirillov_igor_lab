@@ -5,26 +5,22 @@
             readonly
             @click="toggleCalendar"
         />
-
         <div  aria-modal="true" v-show="showCalendar" class="calendar__selector">
-            <div class="calendar__line">
+            <div class="calendar__upper">
                 <div class="calendar__button" @click="changeBufferedDate(-1)">«</div>
                 <div class="calendar__button" @click="changeBufferedDate(0,-1)">‹</div>
-                <div class="calendar__mount-title">
-                    {{monthNames[bufferDate.getMonth()] + bufferDate.getFullYear()}}
-                </div>
+                <div class="calendar__mount-title">{{MonthTitle}}</div>
                 <div class="calendar__button" @click="changeBufferedDate(0, 1)">›</div>
                 <div class="calendar__button" @click="changeBufferedDate(1)">»</div>
             </div>
-            <div class="calendar__line">
+            <div class="calendar__grid">
                 <div v-for="day in dayNames" class="calendar__button">{{day}}</div>
-            </div>
-            <div v-for="week in datesMatrix" class="calendar__line">
                 <div
-                    v-for="date in week"
+                    v-for="(date, index) in datesList"
                     @click="pickDate(date.date)"
-                    class="calendar__button"
+                    :key="index"
                     :class="{'calendar__button--disabled': ! date.enabled}"
+                    class="calendar__button"
                 >
                     {{date.date}}
                 </div>
@@ -45,35 +41,34 @@ export default {
         }
     },
     computed: {
-        monthNames() {
-            return [
-                "янв ", "фев ", "апр ", "мар ", "май ", "июн ", "июл ", "авг ", "сен ", "окт ", "ноя ", "дек ",]
-        },
         dayNames(){
             return ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс',]
         },
-        datesMatrix() {
-            let date = new Date(this.bufferDate)
-            let next_month = (date.getMonth() + 1) % 12
+        MonthTitle(){
+            const monthNames = ["янв ", "фев ", "апр ", "мар ", "май ", "июн ", "июл ", "авг ", "сен ", "окт ", "ноя ", "дек ",]
+            return monthNames[this.bufferDate.getMonth()] + this.bufferDate.getFullYear()
+        },
+        datesList() {
+            const date = new Date(this.bufferDate)
+            const next_month = (date.getMonth() + 1) % 12
             date.setDate(1)
             date.setDate(date.getDate() - date.getDay())
 
             let enabled = false
-            let matrix = []
+            const dates = []
             while (date.getMonth() !== next_month) {
-                let arr = []
                 for (let i = 0; i < 7; i++) {
-                    if (date.getDate() === 1)
+                    if (date.getDate() === 1) {
                         enabled = date.getMonth() !== next_month
-                    arr.push({date: date.getDate(), enabled: enabled})
+                    }
+                    dates.push({date: date.getDate(), enabled: enabled})
                     date.setDate(date.getDate() + 1)
                 }
-                matrix.push(arr)
             }
-            return matrix
+            return dates
         },
         dateString() {
-            return `${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth() + 1}-${this.selectedDate.getDate()}`
+            return `${this.selectedDate.getFullYear()}-${String(this.selectedDate.getMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getDate()).padStart(2, '0')}`
         }
     },
 
@@ -86,10 +81,12 @@ export default {
             this.showCalendar = false
         },
         toggleCalendar()  {
-            if(this.showCalendar)
+            if(this.showCalendar) {
                 this.closeCalendar()
-            else
+            }
+            else {
                 this.openCalendar()
+            }
         },
         pickDate(date) {
             this.selectedDate = new Date(this.bufferDate)
@@ -107,5 +104,5 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import "styles/styles.less";
+    @import "styles/styles.less";
 </style>

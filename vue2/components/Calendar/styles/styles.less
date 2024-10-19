@@ -8,24 +8,34 @@
     font-weight: bolder;
 
     &__selector{
+        width: 100%;
         padding: 3%;
         aspect-ratio: 1/1;
-        box-shadow: 5px 5px 20px gray ;
+        box-shadow: 5px 5px 20px gray;
+        z-index: 1;
+        position: absolute;
+        background-color: whitesmoke;
     }
 
     &__button {
-        width: 14%;
         aspect-ratio: 1/1;
+        min-width: 20px;
         text-align: center;
         &--disabled {
-          pointer-events: none;
+            pointer-events: none;
             color: #aaaaaa;
         }
     }
 
-    &__line {
+    &__upper {
         display: flex;
         justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
     }
 
     &__mount-title {
